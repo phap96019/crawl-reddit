@@ -1,0 +1,16 @@
+{
+  "name": "crawl-reddit-comments",
+  "version": "1.0.0",
+  "description": "Crawl all comments from a Reddit post",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": ["reddit", "crawler", "comments"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
