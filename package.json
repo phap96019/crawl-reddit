@@ -1,16 +1,14 @@
 {
-  "name": "crawl-reddit-comments",
+  "name": "crawl-reddit-app",
   "version": "1.0.0",
-  "description": "Crawl all comments from a Reddit post",
-  "main": "index.js",
-  "type": "module",
+  "description": "Reddit Comment Crawler - React App",
   "scripts": {
-    "start": "node index.js"
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install"
   },
-  "keywords": ["reddit", "crawler", "comments"],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "node-fetch": "^3.3.2"
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }
