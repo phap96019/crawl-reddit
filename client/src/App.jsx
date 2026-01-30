@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './App.css';
 
 // Available fields
 const POST_FIELDS = [
@@ -32,6 +33,7 @@ function App() {
   // Default selected fields
   const [postFields, setPostFields] = useState(['title', 'author', 'subreddit', 'url', 'score', 'num_comments']);
   const [commentFields, setCommentFields] = useState(['author', 'body', 'permalink']);
+  const [showDonate, setShowDonate] = useState(false);
 
   const togglePostField = (key) => {
     setPostFields(prev => 
@@ -246,6 +248,26 @@ function App() {
           <button className="download-btn" onClick={handleDownload}>
             ⬇️ Download {format.toUpperCase()}
           </button>
+        </div>
+      )}
+
+      {/* Donate Button */}
+      <button className="donate-btn" onClick={() => setShowDonate(true)}>
+        ☕ Buy me a coffee
+      </button>
+
+      {/* Donate Modal */}
+      {showDonate && (
+        <div className="modal-overlay" onClick={() => setShowDonate(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowDonate(false)}>✕</button>
+            <h3>☕ Buy me a coffee</h3>
+            <p>Scan QR code to donate</p>
+            <div className="qr-container">
+              <img src="/qr-donate.png" alt="QR Code" className="qr-image" />
+            </div>
+            <p className="donate-thanks">Thank you for your support! 💖</p>
+          </div>
         </div>
       )}
     </div>
