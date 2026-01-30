@@ -1,0 +1,282 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  min-height: 100vh;
+  color: #e0e0e0;
+}
+
+.app {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-size: 2rem;
+  color: #ff4500;
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: #888;
+  font-size: 0.95rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card h2 {
+  font-size: 1rem;
+  color: #ff4500;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* URL Input */
+.url-input-group {
+  display: flex;
+  gap: 12px;
+}
+
+.url-input {
+  flex: 1;
+  padding: 14px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.url-input:focus {
+  outline: none;
+  border-color: #ff4500;
+}
+
+.url-input::placeholder {
+  color: #666;
+}
+
+.crawl-btn {
+  padding: 14px 28px;
+  background: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.crawl-btn:hover:not(:disabled) {
+  background: #ff5722;
+  transform: translateY(-2px);
+}
+
+.crawl-btn:disabled {
+  background: #666;
+  cursor: not-allowed;
+}
+
+/* Format Selector */
+.format-options {
+  display: flex;
+  gap: 16px;
+}
+
+.format-option {
+  flex: 1;
+  position: relative;
+}
+
+.format-option input {
+  position: absolute;
+  opacity: 0;
+}
+
+.format-option label {
+  display: block;
+  padding: 16px;
+  text-align: center;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.format-option input:checked + label {
+  border-color: #ff4500;
+  background: rgba(255, 69, 0, 0.1);
+}
+
+.format-option label:hover {
+  border-color: rgba(255, 69, 0, 0.5);
+}
+
+.format-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.format-desc {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* Field Selector */
+.field-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.field-section h3 {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.field-checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: #ff4500;
+  cursor: pointer;
+}
+
+.field-checkbox span {
+  font-size: 0.95rem;
+}
+
+/* Result Card */
+.result-card {
+  background: rgba(0, 255, 100, 0.05);
+  border-color: rgba(0, 255, 100, 0.2);
+}
+
+.result-info {
+  margin-bottom: 16px;
+}
+
+.result-title {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.result-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.download-btn {
+  width: 100%;
+  padding: 14px;
+  background: #00c853;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.download-btn:hover {
+  background: #00e676;
+  transform: translateY(-2px);
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 20px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 69, 0, 0.2);
+  border-top-color: #ff4500;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  color: #888;
+}
+
+/* Error */
+.error {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 16px;
+  color: #ff6b6b;
+  margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .url-input-group {
+    flex-direction: column;
+  }
+  
+  .field-sections {
+    grid-template-columns: 1fr;
+  }
+  
+  .format-options {
+    flex-direction: column;
+  }
+}
