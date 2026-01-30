@@ -48,8 +48,9 @@ function App() {
   };
 
   const handleCrawl = async () => {
-    if (!url.trim()) {
-      setError('Please enter a Reddit URL');
+    const urls = url.trim().split('\n').map(u => u.trim()).filter(u => u);
+    if (urls.length === 0) {
+      setError('Please enter at least one Reddit URL');
       return;
     }
 
@@ -58,10 +59,11 @@ function App() {
     setResult(null);
 
     try {
+      const urls = url.trim().split('\n').map(u => u.trim()).filter(u => u);
       const res = await fetch('/api/crawl', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: url.trim() }),
+        body: JSON.stringify({ urls }),
       });
 
       const data = await res.json();
@@ -123,24 +125,24 @@ function App() {
 
       {/* URL Input */}
       <div className="card">
-        <h2>📎 Reddit Post URL</h2>
+        <h2>📎 Reddit Post URLs</h2>
+        <p className="input-hint">Enter one or multiple URLs (one per line)</p>
         <div className="url-input-group">
-          <input
-            type="text"
-            className="url-input"
-            placeholder="https://www.reddit.com/r/subreddit/comments/..."
+          <textarea
+            className="url-input url-textarea"
+            placeholder="https://www.reddit.com/r/subreddit/comments/...&#10;https://www.reddit.com/r/another/comments/...&#10;(one URL per line)"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleCrawl()}
+            rows={4}
           />
-          <button 
-            className="crawl-btn" 
-            onClick={handleCrawl}
-            disabled={loading}
-          >
-            {loading ? '⏳' : '🔍'} Crawl
-          </button>
         </div>
+        <button 
+          className="crawl-btn crawl-btn-full" 
+          onClick={handleCrawl}
+          disabled={loading}
+        >
+          {loading ? '⏳' : '🔍'} Crawl {url.trim().split('\n').filter(u => u.trim()).length > 1 ? `(${url.trim().split('\n').filter(u => u.trim()).length} URLs)` : ''}
+        </button>
       </div>
 
       {/* Format Selector */}
@@ -236,14 +238,22 @@ function App() {
       {result && !loading && (
         <div className="card result-card">
           <h2>✅ Crawl Complete</h2>
-          <div className="result-info">
-            <div className="result-title">{result.post.title}</div>
-            <div className="result-meta">
-              <span>👤 u/{result.post.author}</span>
-              <span>📁 r/{result.post.subreddit}</span>
-              <span>⬆️ {result.post.score} votes</span>
-              <span>💬 {result.commentCount} comments</span>
-            </div>
+          <div className="result-summary">
+            <span>📊 {result.postCount} post(s)</span>
+            <span>💬 {result.totalComments} total comments</span>
+          </div>
+          <div className="result-posts">
+            {result.posts.map((post, index) => (
+              <div key={index} className="result-info">
+                <div className="result-title">{post.title}</div>
+                <div className="result-meta">
+                  <span>👤 u/{post.author}</span>
+                  <span>📁 r/{post.subreddit}</span>
+                  <span>⬆️ {post.score} votes</span>
+                  <span>💬 {post.commentCount} comments</span>
+                </div>
+              </div>
+            ))}
           </div>
           <button className="download-btn" onClick={handleDownload}>
             ⬇️ Download {format.toUpperCase()}

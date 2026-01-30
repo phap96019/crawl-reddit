@@ -228,8 +228,23 @@ export function generateCSV(data, postFields, commentFields) {
     ...commentFields.map(f => `comment_${f}`)
   ];
   
-  const rows = data.comments.map(comment => {
-    const postValues = postFields.map(f => escapeCSV(data.post[f]));
+  // Support both single post and multiple posts format
+  const posts = data.posts || [data.post];
+  const comments = data.comments;
+  
+  // Create a map of post by id for quick lookup
+  const postMap = new Map();
+  posts.forEach(post => postMap.set(post.id, post));
+  
+  const rows = comments.map(comment => {
+    // Find the post this comment belongs to (by matching parent_id prefix)
+    const postId = comment.parent_id?.startsWith('t3_') 
+      ? comment.parent_id.slice(3) 
+      : (comment.permalink?.match(/\/comments\/([a-z0-9]+)/i)?.[1] || posts[0]?.id);
+    
+    const post = postMap.get(postId) || posts[0];
+    
+    const postValues = postFields.map(f => escapeCSV(post?.[f]));
     const commentValues = commentFields.map(f => escapeCSV(comment[f]));
     return [...postValues, ...commentValues].join(',');
   });
