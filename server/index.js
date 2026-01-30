@@ -1,12 +1,20 @@
 import express from 'express';
 import cors from 'cors';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import { crawlRedditComments, generateCSV } from './redditCrawler.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from public folder (built client)
+app.use(express.static(join(__dirname, 'public')));
 
 // Store crawled data temporarily (in production, use Redis or similar)
 const crawlCache = new Map();
@@ -80,6 +88,11 @@ app.post('/api/download/csv', (req, res) => {
   res.setHeader('Content-Type', 'text/csv');
   res.setHeader('Content-Disposition', `attachment; filename="reddit_comments_${cacheId}.csv"`);
   res.send(csv);
+});
+
+// Serve React app for all other routes (SPA fallback)
+app.get('*', (req, res) => {
+  res.sendFile(join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
