@@ -446,3 +446,117 @@ body {
   color: #ff6b35 !important;
   font-weight: 500;
 }
+
+/* ============ PLATFORM TABS ============ */
+.platform-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.platform-tab {
+  flex: 1;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #888;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.platform-tab:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.platform-tab.active {
+  background: rgba(255, 69, 0, 0.1);
+  border-color: #ff4500;
+  color: #ff4500;
+}
+
+/* Facebook active tab - blue accent */
+.platform-tab.active:last-child {
+  background: rgba(24, 119, 242, 0.1);
+  border-color: #1877f2;
+  color: #1877f2;
+}
+
+/* ============ FACEBOOK SPECIFIC STYLES ============ */
+.fb-login-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fb-login-section h3 {
+  font-size: 0.9rem;
+  color: #1877f2;
+  margin-bottom: 8px;
+}
+
+.fb-login-fields {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.fb-input {
+  flex: 1;
+}
+
+.fb-privacy-note {
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.fb-crawl-btn {
+  background: #1877f2;
+}
+
+.fb-crawl-btn:hover:not(:disabled) {
+  background: #1a8cff;
+}
+
+.fb-field-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.fb-result-card {
+  background: rgba(24, 119, 242, 0.05);
+  border-color: rgba(24, 119, 242, 0.2);
+}
+
+.fb-result-card .result-summary {
+  background: rgba(24, 119, 242, 0.1);
+  color: #1877f2;
+}
+
+.fb-download-btn {
+  background: #1877f2;
+}
+
+.fb-download-btn:hover {
+  background: #1a8cff;
+}
+
+/* Responsive adjustments for Facebook */
+@media (max-width: 600px) {
+  .platform-tabs {
+    flex-direction: column;
+  }
+  
+  .fb-login-fields {
+    flex-direction: column;
+  }
+  
+  .fb-field-list {
+    grid-template-columns: 1fr;
+  }
+}

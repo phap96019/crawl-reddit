@@ -3,6 +3,7 @@ import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { crawlRedditComments, generateCSV } from './redditCrawler.js';
+import { crawlFacebookComments, generateFacebookCSV } from './facebookCrawler.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,6 +19,7 @@ app.use(express.static(join(__dirname, 'public')));
 
 // Store crawled data temporarily (in production, use Redis or similar)
 const crawlCache = new Map();
+const facebookCache = new Map();
 
 // Crawl endpoint - supports multiple URLs
 app.post('/api/crawl', async (req, res) => {
@@ -119,6 +121,92 @@ app.post('/api/download/json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Content-Disposition', `attachment; filename="reddit_comments_${cacheId}.json"`);
   res.send(JSON.stringify(data, null, 2));
+});
+
+// ============== FACEBOOK ENDPOINTS ==============
+
+// Facebook crawl endpoint
+app.post('/api/crawl/facebook', async (req, res) => {
+  const { url, credentials } = req.body;
+  
+  if (!url) {
+    return res.status(400).json({ error: 'Facebook URL is required' });
+  }
+  
+  // Validate URL is a Facebook URL
+  if (!url.includes('facebook.com')) {
+    return res.status(400).json({ error: 'Invalid Facebook URL' });
+  }
+  
+  try {
+    console.log(`\n🚀 Starting Facebook crawl for 2: ${url}`);
+    
+    const result = await crawlFacebookComments(url, {
+      credentials: credentials?.email && credentials?.password ? credentials : null,
+      headless: true, // Run headless in production
+      onProgress: (progress) => {
+        console.log(`   📊 [${progress.stage}] ${progress.message}`);
+      },
+    });
+    
+    // Cache the result for download
+    const cacheId = `fb_${Date.now()}`;
+    facebookCache.set(cacheId, result);
+    
+    // Clean up old cache entries (keep last 10)
+    if (facebookCache.size > 10) {
+      const firstKey = facebookCache.keys().next().value;
+      facebookCache.delete(firstKey);
+    }
+    
+    console.log(`\n✅ Facebook crawl complete: ${result.comments.length} comments`);
+    
+    res.json({
+      success: true,
+      cacheId,
+      post: {
+        url: result.post.url,
+        author_name: result.post.author_name,
+        content: result.post.content?.substring(0, 200) + (result.post.content?.length > 200 ? '...' : ''),
+      },
+      totalComments: result.comments.length,
+      crawled_at: result.crawled_at,
+    });
+    
+  } catch (error) {
+    console.error(`❌ Facebook Error: ${error.message}`);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Facebook download JSON endpoint
+app.post('/api/download/facebook/json', (req, res) => {
+  const { cacheId } = req.body;
+  
+  const data = facebookCache.get(cacheId);
+  if (!data) {
+    return res.status(404).json({ error: 'Data not found. Please crawl again.' });
+  }
+  
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', `attachment; filename="facebook_comments_${cacheId}.json"`);
+  res.send(JSON.stringify(data, null, 2));
+});
+
+// Facebook download CSV endpoint
+app.post('/api/download/facebook/csv', (req, res) => {
+  const { cacheId, commentFields } = req.body;
+  
+  const data = facebookCache.get(cacheId);
+  if (!data) {
+    return res.status(404).json({ error: 'Data not found. Please crawl again.' });
+  }
+  
+  const csv = generateFacebookCSV(data.post, data.comments, commentFields);
+  
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', `attachment; filename="facebook_comments_${cacheId}.csv"`);
+  res.send(csv);
 });
 
 // Download CSV endpoint
